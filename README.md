@@ -1,5 +1,5 @@
 # kilosort3-docker
-Kilosort3 with Matlab, required toolboxes, and compiled mex gpu funtions.
+Kilosort3 with Matlab, required toolboxes, and compiled mex gpu functions.
 
 This is a work in progress.
 
@@ -12,17 +12,17 @@ Kilosort3 requires NVIDIA GPU hardware in order to run, so that is still a requi
 
 # Outline
 
-Running 'build.sh' should produce a new, local Docker image named `kilosort3`.  This should have Kilosort3, Matlab, Matlab toolboxes that are required for Kilosort3 (Parallel_Computing_Toolbox, Signal_Processing_Toolbox, and Statistics_and_Machine_Learning_Toolbox), and compiled mex gpu binaries built from Kilosort3 source.
+Running `build.sh` should produce a new, local Docker image named `kilosort3`.  This should have Kilosort3, Matlab, Matlab toolboxes that are required for Kilosort3 (Parallel_Computing_Toolbox, Signal_Processing_Toolbox, and Statistics_and_Machine_Learning_Toolbox), and compiled mex gpu binaries built from Kilosort3 source.
 
 Here's how the image is built up:
 
  1. Create a base image named `kilosort3-dependencies` that has Kilosort3 code, Matlab 2022b, and required Matlab toolboxes.
  2. Create a temp image named `kilosort3-mex-build` that has dependencies above, plus [CUDA Toolkit 11.2](https://developer.nvidia.com/cuda-11.2.0-download-archive?target_os=Linux&target_arch=x86_64&target_distro=Ubuntu&target_version=2004&target_type=runfilelocal), [as required for Matlab 2022b](https://www.mathworks.com/help/parallel-computing/run-cuda-or-ptx-code-on-gpu.html#mw_20acaa78-994d-4695-ab4b-bca1cfc3dbac).
- 3. Run a container from `kilosort3-mex-build` to actually launch Matlab and compile the Kilosort3 mex gpu binaries, and copy the binaries out of the container so we an use them in the next step.
- 4. Create the final image named `kilosort3` that has Kilosort3 code, Matlab 2022b, required Matlab toolboxes, and the mex gpu binaries built in the previous step.
+ 3. Run a container from `kilosort3-mex-build` to launch Matlab and compile the Kilosort3 mex gpu binaries, and copy the binaries out of the container so we can use them in the next step.
+ 4. Create the final image named `kilosort3` that has Kilosort3, Matlab, required Matlab toolboxes, and the mex gpu binaries built in the previous step.
 
 ## Image sizes and licensing
-Why go to the trouble of implementing this in multiple steps?  Why would we want a temp Docker image and a Docker container execution in the middle?  Why not put all of this into Dockerfile `RUN` steps in one Docker file?  This outline seemed like a solution to a couple of specific challenges:
+Why go to the trouble of implementing this in multiple steps?  Why would we want a temp Docker image and a Docker container execution in the middle?  Why not put all of this into `RUN` steps of a single Dockerfile?  The outline here seemed like a solution to a couple of specific challenges:
 
  - Image sizes -- As we go, these Docker images get large (see the table below).  Creating a temp image with CUDA Toolkit, which we could use then discard, was one way to avoid carrying the whole toolkit around in the final image.
  - Matlab licensing -- In order to build the mex gpu functions for Kilosort3, we need to actually launch Matlab.  This requires some environment configuration.  This config seemed sensible as a one time, runtime step, as opposed to being part of the image creation step.
@@ -52,6 +52,6 @@ Probably the automated build would not be able to run `build.sh` as-is, since th
 ## Kilosort Testing
 The goal of this repo is a working Kilosort environment.  How do we know if it's working?  It would be great to have automated tests we can run to check this.  The tests might have to run locally, since they would depend on the presence of real NVIDIA graphics hardware and a Matlab license.
 
-Unfortunately, the Kilosort project seems not to be set up for automated self-testing, [as of 2022](https://github.com/MouseLand/Kilosort/issues/476).  The included "eMouse" code might serve as a test case, but the [current eMouse code](https://github.com/MouseLand/Kilosort/blob/main/eMouse_drift/main_eMouse_drift.m) would need modifications to work as an automated test -- to remove hard-coded file paths and to include automated assertions rather than expecting interactive visualization.
+Unfortunately, the Kilosort project seems not to be set up for easy automated self-testing, [as of 2022](https://github.com/MouseLand/Kilosort/issues/476).  The included "eMouse" code seems like a good starting point, but the [current eMouse code](https://github.com/MouseLand/Kilosort/blob/main/eMouse_drift/main_eMouse_drift.m) would need modifications to work as an automated test -- to remove hard-coded file paths and to focus on automated assertions rather than interactive visualization.
 
 This may be a worthy contribution we can make from here!
