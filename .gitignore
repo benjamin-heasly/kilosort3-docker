@@ -1,0 +1,2 @@
+# mex gpu compiling depends on a local Matlab license file
+*.lic
