@@ -1,6 +1,9 @@
-# Start with our image that has Matlab and Kilosort
-FROM kilosort3-dependencies
+# Start with our image that has Matlab and kilosort3 code.
+FROM ninjaben/kilosort3-code:r2022b
 
-# Add in combiled kilosort mex gpu binaries from a previous step.
-# This way, we don't have to include the large CUDA toolkit in this image.
+# Add in compiled kilosort mex gpu binaries from the kilosort3-build step.
+# This way, we don't have to include the large CUDA toolkit going forward.
 ADD ./kilosort3-binaries/*.mexa64 /home/matlab/kilosort/CUDA/
+
+# On Matlab start, log useful info and add kilosort to the path.
+ADD ./startup.m /home/matlab/Documents/MATLAB/startup.m

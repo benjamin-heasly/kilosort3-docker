@@ -9,3 +9,10 @@ fprintf('Found kilosort at %s\n', which('kilosort'));
 
 [~, gitStatus] = system(sprintf('git -C %s status', kilosortPath));
 fprintf('Kilosort git status:\n%s\n', gitStatus);
+
+try
+    % Log what Matlab can find for GPU devices.
+    gpuDevice
+catch e
+    warning(e.message)
+end
