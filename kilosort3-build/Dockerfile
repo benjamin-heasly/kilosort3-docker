@@ -1,5 +1,6 @@
 # Add nvidia toolbox 11.2 to the kilosort3-code image, to do a local build of mex functions.
-FROM ninjaben/kilosort3-code:r2022b
+ARG VERSION=r2022b
+FROM ninjaben/kilosort3-code:$VERSION
 
 # Become root to install more packages.
 USER root
