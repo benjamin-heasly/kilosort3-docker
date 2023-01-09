@@ -1,4 +1,4 @@
-# Add nvidia toolbox 11.2 to the kilosort3-code image, to do a local build of mex functions.
+# Add NVIDIA CUDA toolbox 11.2 to the kilosort3-code image, to do a local build of mex functions.
 ARG VERSION=r2022b
 FROM ninjaben/kilosort3-code:$VERSION
 
