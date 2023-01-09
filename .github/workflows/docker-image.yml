@@ -27,6 +27,7 @@ jobs:
         push: true
         tags: ninjaben/matlab-parallel:${{ env.version-tag }}
   kilosort3-code:
+    needs: matlab-parallel
     runs-on: ubuntu-latest
     steps:
     - name: Check out this repo
@@ -44,6 +45,7 @@ jobs:
         push: true
         tags: ninjaben/kilosort3-code:${{ env.version-tag }}
   kilosort3:
+    needs: kilosort3-code
     runs-on: ubuntu-latest
     steps:
     - name: Check out this repo
