@@ -18,7 +18,7 @@ Here's a summary of the host config and Docker image stack that go into this Kil
 ## Host config
 Some host configuration is required to support GPU-accelerated Docker containers.  It should be possible to accomplish equvalent setup on Windows 11 or Linux, and to use the same Docker images from there.
 
-### Windows 11
+### Windows 11 plus Linux via WSL 2
 NVIDIA Docker setup for Windows 11 is documented well by both [Canonical](https://ubuntu.com/tutorials/enabling-gpu-acceleration-on-ubuntu-on-wsl2-with-the-nvidia-cuda-platform#3-install-nvidia-cuda-on-ubuntu) and [NVIDIA](https://docs.nvidia.com/cuda/wsl-user-guide/index.html#cuda-support-for-wsl-2).
 
 The setup requires Windows 11 (or some later builds of Windows 10).  It uses **Windows** NVIDIA drivers installed via the standard process **in Windows**.  It is surprising but true that Linux containers running under Windows will use the **Windows** NVIDIA drivers, not the Linux drivers.
@@ -60,30 +60,30 @@ This image can be created locally and used temporarily.  It builds on `ninjaben/
 
 Using this image, the script `kilosort3-build/build.sh` can run a one-time Docker container with Matlab, which calls [mexcuda](https://www.mathworks.com/help/parallel-computing/mexcuda.html) to compile GPU-accelerated mex-functions.  First it compiles the Mathworks [mexGPUExample](https://www.mathworks.com/help/parallel-computing/run-mex-functions-containing-cuda-code.html) function as a diagnostic for `mexcuda` and runtime configuration (see example commands below).  Then it compiles Kilosort's own GPU-accelerated mex-functions.  It copies all the resulting mex binaries out of the container, to be saved in this repo and included in the final `ninjaben/kilosort3`, below.
 
-Since this step runs in Matlab it's not a good fit for automated building with GitHub and Docker Hub.  This is unfortunate, since it interrupts the simplicity, reproducibility, and beauty of an end-to-end, automated build.  But given the Matlab licensing constriant, we may have to live with this.  Here are a few consolations:
+Since this step runs in Matlab it's not a good fit for automated building with GitHub and Docker Hub.  This is unfortunate, since it interrupts the simplicity, reproducibility, and beauty of an end-to-end, automated build.  But given the Matlab licensing constriant we may have to live with this.  Here are a few consolations:
 
  - This temp build image has the same parent image as the final `ninjaben/kilosort3`, so the two will be consistent and compatible.
- - Everything required to create the build image and run it, with the exception of the Matlab licence, is versioned here in this repo.
+ - Everything required to create the temp build image and run a container from it (with the exception of the Matlab licence) is versioned here in this repo.
  - The precompiled binaries themselves are also versioned here in this repo.
- - This step is a natural place to set aside the large CUDA Toolkit, and keep it out of downstream images (sort of like a Docker multi-stage build).
+ - This temp build image is a natural place to set aside the large CUDA Toolkit, and limit the size of downstream images (sort of like a Docker multi-stage build).
 
 ### `ninjaben/kilosort3`
-This is the final image built from this repo.  It builds on `ninjaben/kilosort3-code` and adds precompiled binaries for Kilosort's GPU-accelerated mex-functions -- the ones created in the prebious step.   You shold be able to pull this image onto a configured host and start running Kilosort3 (see example commands, below).
+This is the final image built from this repo.  It builds on `ninjaben/kilosort3-code` and adds precompiled binaries for Kilosort's GPU-accelerated mex-functions -- the binaries created in the previous step.   You shold be able to pull this image onto a configured host and start running Kilosort3 (see example commands, below).
 
-The [ninjaben/kilosort3-code](https://hub.docker.com/repository/docker/ninjaben/kilosort3-code/general) image is available on Docker Hub.
+The [ninjaben/kilosort3](https://hub.docker.com/repository/docker/ninjaben/kilosort3/general) image is available on Docker Hub.
 
 # Example Commands
-Here are some example Docker run commands that should help you run `ninjaben/kilosort3` on a confiured host.
+Here are some example `docker run` commands that should help you run `ninjaben/kilosort3` containers on a confiured host.
 
 ## Diagnostic
 You can run the Mathworks [mexGPUExample](https://www.mathworks.com/help/parallel-computing/run-mex-functions-containing-cuda-code.html) to check if the host, Docker, CUDA, and Matlab are all working together.
 
-This example uses a local Matlab license, specific to the host MAC address.  There are also more ways to configure the license, documented in the [Matlab readme on Docker Hub](https://hub.docker.com/r/mathworks/matlab).  You'll probably need to edit the command a bit to reflect your license situation.
+This example uses a local Matlab license, specific to the host MAC address.  There are also more ways to configure the license, documented in the [Matlab readme on Docker Hub](https://hub.docker.com/r/mathworks/matlab).  You'll probably need to edit this command a bit to reflect your license situation.
 
 ```
 LICENSE_MAC_ADDRESS=$(cat /sys/class/net/en*/address)
 LICENSE_FILE="$(pwd)/license.lic"
-sudo docker run --rm \
+docker run --gpus all --rm \
   --mac-address "$LICENSE_MAC_ADDRESS" \
   -v "$LICENSE_FILE":/licenses/license.lic \
   -e MLM_LICENSE_FILE=/licenses/license.lic \
@@ -108,7 +108,7 @@ If the diagnostic above looks good, then a similar command should work for testi
 ```
 LICENSE_MAC_ADDRESS=$(cat /sys/class/net/en*/address)
 LICENSE_FILE="$(pwd)/license.lic"
-sudo docker run --rm \
+docker run --gpus all --rm \
   --mac-address "$LICENSE_MAC_ADDRESS" \
   -v "$LICENSE_FILE":/licenses/license.lic \
   -e MLM_LICENSE_FILE=/licenses/license.lic \
@@ -132,7 +132,7 @@ You might want to bring your own scripts and data for this, perhaps in dirs on t
 ```
 LICENSE_MAC_ADDRESS=$(cat /sys/class/net/en*/address)
 LICENSE_FILE="$(pwd)/license.lic"
-sudo docker run --rm \
+docker run --gpus all --rm \
   --mac-address "$LICENSE_MAC_ADDRESS" \
   -v "$LICENSE_FILE":/licenses/license.lic \
   -e MLM_LICENSE_FILE=/licenses/license.lic \
