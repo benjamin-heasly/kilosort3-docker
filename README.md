@@ -16,7 +16,7 @@ Here's a summary of the host config and Docker image stack that go into this Kil
 ![Kilosort3 Docker environment includes Docker image layers and host config.](kilosort3-docker.png)
 
 ## Host config
-Some host configuration is required to support GPU-accelerated Docker containers.  It should be possible to accomplish equvalent setup on Windows 11 or Linux, and use the same Docker images from there.
+Some host configuration is required to support GPU-accelerated Docker containers.  It should be possible to accomplish equvalent setup on Windows 11 or Linux, and to use the same Docker images from there.
 
 ### Windows 11
 NVIDIA Docker setup for Windows 11 is documented well by both [Canonical](https://ubuntu.com/tutorials/enabling-gpu-acceleration-on-ubuntu-on-wsl2-with-the-nvidia-cuda-platform#3-install-nvidia-cuda-on-ubuntu) and [NVIDIA](https://docs.nvidia.com/cuda/wsl-user-guide/index.html#cuda-support-for-wsl-2).
@@ -27,7 +27,7 @@ The [Windows Subsystem for Linux Version 2](https://learn.microsoft.com/en-us/wi
 
 Finally, the setup includes NVIDIA's [cuda-wsl-ubuntu](https://docs.nvidia.com/cuda/wsl-user-guide/index.html#cuda-support-for-wsl-2) package, which provides NVIDIA management tools but won't clobber the NVIDIA driver stubs that connect Linux to the Windows drivers.
 
-### Linux
+### Regular Linux
 NVIDIA Docker setup for Linux might be hard to document in general.  But the key requirements are to install:
 
  - Linux distro with [Linux NVIDIA drivers](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/)
