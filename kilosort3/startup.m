@@ -23,5 +23,5 @@ addpath(fullfile(npyMatlabPath, 'npy-matlab'));
 
 fprintf('Found npy-matlab at %s\n', which('readNPY'));
 
-[~, npyMatlabStatus] = system(sprintf('git -C %s status', npyMatlabStatus));
-fprintf('npy-matlab git status:\n%s\n', gitStatus);
+[~, npyMatlabStatus] = system(sprintf('git -C %s status', npyMatlabPath));
+fprintf('npy-matlab git status:\n%s\n', npyMatlabStatus);
