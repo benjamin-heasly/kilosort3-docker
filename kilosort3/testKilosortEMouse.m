@@ -27,6 +27,10 @@ if ~isfolder(eMouseDataDir)
     mkdir(eMouseDataDir)
 end
 
+if ~isfolder(kilosortScratchDir)
+    mkdir(kilosortScratchDir)
+end
+
 % Create the simulated probe channel map: 64 sites with imec 3A geometry.
 NchanTOT = 64;
 chanMapName = make_eMouseChannelMap_3B_short(eMouseDataDir, NchanTOT);
