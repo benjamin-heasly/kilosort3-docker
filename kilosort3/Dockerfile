@@ -8,3 +8,6 @@ ADD ./kilosort3-binaries/*.mexa64 /home/matlab/kilosort/CUDA/
 
 # On Matlab start, log useful info and add kilosort to the path.
 ADD ./startup.m /home/matlab/Documents/MATLAB/startup.m
+
+# Add a test script for Kilosort itself.
+ADD ./testKilosortEMouse.m /home/matlab/kilosort/testKilosortEMouse.m
