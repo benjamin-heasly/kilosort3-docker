@@ -51,7 +51,9 @@ This image starts from the offical [mathworks/matlab:r2022b](https://hub.docker.
 The [ninjaben/matlab-parallel](https://hub.docker.com/repository/docker/ninjaben/matlab-parallel/general) image is available on Docker Hub.
 
 ### `ninjaben/kilosort3-code`
-This image builds on `ninjaben/matlab-parallel` and adds Git and [Kilosort3](https://github.com/MouseLand/Kilosort).  It keeps Git installed as a way to check and report the commit hash of the Kilosort3 code being used.
+This image builds on `ninjaben/matlab-parallel` and adds Git, [Kilosort3](https://github.com/MouseLand/Kilosort), and [npy-matlab](https://github.com/kwikteam/npy-matlab).  It keeps Git installed as a way to check and report the commit hashes of cloned toolboxes.
+
+It also adds a test script, `testKilosortEMouse.m`, to serve as an automated test of the whole environment (see example commands, below).
 
 The [ninjaben/kilosort3-code](https://hub.docker.com/repository/docker/ninjaben/kilosort3-code/general) image is available on Docker Hub.
 
@@ -113,16 +115,17 @@ docker run --gpus all --rm \
   -v "$LICENSE_FILE":/licenses/license.lic \
   -e MLM_LICENSE_FILE=/licenses/license.lic \
   ninjaben/kilosort3:v0.0.3 \
-  -batch "kilosortEMouseTest()"
+  -batch "testKilosortEMouse()"
 ```
 
 After a successful run, Matlab should print a success message:
 
 ```
-  TODO!
+We found some good clusters:
+  ... good cluster counts ...
 ```
 
-TODO: make a version of the [eMouse example](https://github.com/MouseLand/Kilosort/blob/main/eMouse_drift/main_eMouse_drift.m) that can run unattended and make assertions, on Linux.  This is because [as of 2022](https://github.com/MouseLand/Kilosort/issues/476) Kilosort3 doesn't have an automated test suite we can run.
+The function `testKilosortEMouse.m` comes from this repo and is based on Kilosort's [eMouse example](https://github.com/MouseLand/Kilosort/blob/main/eMouse_drift/main_eMouse_drift.m).  It's been reshaped to run unattended, support Linux, and to report sanity check assertions.  This is needed because [as of 2022](https://github.com/MouseLand/Kilosort/issues/476) Kilosort3 doesn't have an automated test suite we can run.
 
 ## Kilosort3 spike sorting
 If the Kilosort test above looks good, then you could try doing some actual spike sorting.

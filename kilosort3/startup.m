@@ -1,18 +1,27 @@
 % Log what we have here for official Matlab stuff.
 ver
 
+% Log what Matlab can find for GPU devices.
+try
+    gpuDevice
+catch e
+    warning(e.message)
+end
+
 % Get kilosort on the path.
 kilosortPath = '/home/matlab/kilosort';
 addpath(genpath(kilosortPath));
 
 fprintf('Found kilosort at %s\n', which('kilosort'));
 
-[~, gitStatus] = system(sprintf('git -C %s status', kilosortPath));
-fprintf('Kilosort git status:\n%s\n', gitStatus);
+[~, kilosortStatus] = system(sprintf('git -C %s status', kilosortPath));
+fprintf('Kilosort git status:\n%s\n', kilosortStatus);
 
-try
-    % Log what Matlab can find for GPU devices.
-    gpuDevice
-catch e
-    warning(e.message)
-end
+% Get npy-matlab on the path.
+npyMatlabPath = '/home/matlab/npy-matlab';
+addpath(fullfile(npyMatlabPath, 'npy-matlab'));
+
+fprintf('Found npy-matlab at %s\n', which('readNPY'));
+
+[~, npyMatlabStatus] = system(sprintf('git -C %s status', npyMatlabStatus));
+fprintf('npy-matlab git status:\n%s\n', gitStatus);
