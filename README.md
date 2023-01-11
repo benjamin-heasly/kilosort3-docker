@@ -89,7 +89,7 @@ docker run --gpus all --rm \
   --mac-address "$LICENSE_MAC_ADDRESS" \
   -v "$LICENSE_FILE":/licenses/license.lic \
   -e MLM_LICENSE_FILE=/licenses/license.lic \
-  ninjaben/kilosort3:v0.0.3 \
+  ninjaben/kilosort3:v0.0.4 \
   -batch "shouldBeTwos = mexGPUExample(ones(4,4,'gpuArray'))"
 ```
 
@@ -114,7 +114,7 @@ docker run --gpus all --rm \
   --mac-address "$LICENSE_MAC_ADDRESS" \
   -v "$LICENSE_FILE":/licenses/license.lic \
   -e MLM_LICENSE_FILE=/licenses/license.lic \
-  ninjaben/kilosort3:v0.0.3 \
+  ninjaben/kilosort3:v0.0.4 \
   -batch "testKilosortEMouse()"
 ```
 
@@ -141,7 +141,7 @@ docker run --gpus all --rm \
   -e MLM_LICENSE_FILE=/licenses/license.lic \
   -v /my/kilosort/code:/my/kilosort/code \
   -v /my/kilosort/data:/my/kilosort/data \
-  ninjaben/kilosort3:v0.0.3 \
+  ninjaben/kilosort3:v0.0.4 \
   -batch "myKilosortFunction('/my/kilosort/data/a/b/c')"
 ```
 
