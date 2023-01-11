@@ -16,9 +16,9 @@
 function success = testKilosortEMouse(eMouseDataDir, kilosortCodeDir, kilosortScratchDir)
 
 arguments
-    eMouseDataDir = fullfile(tempdir(), 'eMouse')
+    eMouseDataDir = fullfile('/', 'home', 'matlab', 'eMouse')
     kilosortCodeDir = fileparts(which('kilosort.m'));
-    kilosortScratchDir = fullfile(tempdir(), 'kilosortScratch');
+    kilosortScratchDir = fullfile('/', 'home', 'matlab', 'kilosortScratch');
 end
 
 success = false;
