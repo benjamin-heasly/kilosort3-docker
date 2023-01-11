@@ -54,7 +54,7 @@ ops.fproc = fullfile(kilosortScratchDir, 'temp_wh.dat');
 ops.fs = 30000;
 ops.fshigh = 300;
 ops.minfr_goodchannels = 0.1;
-ops.Th = [6 2];
+ops.Th = [9 9];
 ops.lam = 10;
 ops.AUCsplit = 0.9;
 ops.minFR = 1 / 50;
@@ -76,29 +76,17 @@ ops.nPCs = 3;
 ops.useRAM = 0;
 ops.nblocks = 5;
 
-
-%% Run Kilosort utils on the simulated probe and neural data.
-
 % Reinitialize the GPU.
 gpuDevice(1);   %re-initialize GPU
 
-% Preprocess data including creation of temp file ops.fproc (temp_wh.dat).
+%% Run Kilosort utils on the simulated probe and neural data.
 rez = preprocessDataSub(ops);
-
-% Do "registration" and "shifting" of data (?).
 rez = datashift2(rez, 1);
-
-% Main optimization (?).
-rez = learnAndSolve8b(rez, 1);
-
-% Final splits (?).
+[rez, st3, tF] = extract_spikes(rez);
+rez = template_learning(rez, tF, st3);
+[rez, st3, tF] = trackAndSort(rez);
+rez = final_clustering(rez, tF, st3);
 rez = find_merges(rez, 1);
-
-% Final splits by SVD (?).
-rez = splitAllClusters(rez, 1);
-
-% Decide on cutoff (?).
-rez = set_cutoff(rez);
 rez.good = get_good_units(rez);
 
 % Export results to Numpy / Phy.
