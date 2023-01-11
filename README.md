@@ -115,7 +115,7 @@ docker run --gpus all --rm \
   -v "$LICENSE_FILE":/licenses/license.lic \
   -e MLM_LICENSE_FILE=/licenses/license.lic \
   ninjaben/kilosort3:v0.0.4 \
-  -batch "testKilosortEMouse()"
+  -batch "success = testKilosortEMouse()"
 ```
 
 After a successful run, Matlab should print a success message:
@@ -123,6 +123,7 @@ After a successful run, Matlab should print a success message:
 ```
 We found some good clusters:
   ... good cluster counts ...
+success = true
 ```
 
 The function `testKilosortEMouse.m` comes from this repo and is based on Kilosort's [eMouse example](https://github.com/MouseLand/Kilosort/blob/main/eMouse_drift/main_eMouse_drift.m).  It's been reshaped to run unattended, support Linux, and to report sanity check assertions.  This is needed because [as of 2022](https://github.com/MouseLand/Kilosort/issues/476) Kilosort3 doesn't have an automated test suite we can run.
