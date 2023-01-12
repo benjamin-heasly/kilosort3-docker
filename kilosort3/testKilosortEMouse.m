@@ -38,7 +38,7 @@ chanMapName = make_eMouseChannelMap_3B_short(eMouseDataDir, NchanTOT);
 % Generate simulated neural data.
 useGPU = 1;
 useParPool = 0;
-make_eMouseData_drift(eMouseDataDir, kilosortCodeDir, chanMapName, useGPU, useParPool)
+make_eMouseData_drift(eMouseDataDir, kilosortCodeDir, chanMapName, useGPU, useParPool);
 
 % Choose kilosort options suitable for the simulated probe and neural data.
 % See Kilosort/configFiles/StandardConfig_MOVEME.m for some explanation.
