@@ -87,7 +87,6 @@ rez = template_learning(rez, tF, st3);
 [rez, st3, tF] = trackAndSort(rez);
 rez = final_clustering(rez, tF, st3);
 rez = find_merges(rez, 1);
-rez.good = get_good_units(rez);
 
 % Export results to Numpy / Phy.
 rezToPhy(rez, eMouseDataDir);
