@@ -10,4 +10,4 @@ ADD ./kilosort3-binaries/*.mexa64 /home/matlab/kilosort/CUDA/
 ADD ./startup.m /home/matlab/Documents/MATLAB/startup.m
 
 # Add a test script for Kilosort itself.
-ADD ./testKilosortEMouse.m /home/matlab/kilosort/testKilosortEMouse.m
+ADD ./testKilosortEMouse.m /home/matlab/testKilosortEMouse.m

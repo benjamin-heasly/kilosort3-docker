@@ -77,7 +77,7 @@ ops.useRAM = 0;
 ops.nblocks = 5;
 
 % Reinitialize the GPU.
-gpuDevice(1);   %re-initialize GPU
+gpuDevice(1);
 
 %% Run Kilosort utils on the simulated probe and neural data.
 rez = preprocessDataSub(ops);
@@ -111,10 +111,30 @@ end
 fclose(fileID);
 
 % Report sanity checks.
-sumOfGood = sum(rez.good>0);
-assert(any(sumOfGood), 'We didn''t find any good clusters');
+clusterCount = numel(rez.good);
+goodCount = sum(rez.good > 0);
+success = any(rez.good);
+if success
+    fprintf('Success: found %d clusters with %d considered "good".\n', clusterCount, goodCount);
+else
+    fprintf('Failure: found %d clusters but none considered "good".\n', clusterCount);
+end
 
-disp('We found some good clusters:')
-disp(sumOfGood)
+% Compare sorting results to simulation ground truth.
+sortType = 2;
+bAutoMerge = 0;
+benchmark_drift_simulation(rez, ...
+    fullfile(eMouseDataDir, 'eMouseGroundTruth.mat'), ...
+    fullfile(eMouseDataDir, 'eMouseSimRecord.mat'), ...
+    sortType, ...
+    bAutoMerge, ...
+    fullfile(eMouseDataDir, 'output_cluster_metrics.txt'));
 
-success = true;
+% Save any figures produced above so we can view the images.
+figures = findobj('Type', 'figure');
+for ii = 1:numel(figures)
+    fig = figures(ii);
+    name = sprintf('testKilosortEMouse-%d.png', ii);
+    file = fullfile(eMouseDataDir, name);
+    saveas(fig, file);
+end
