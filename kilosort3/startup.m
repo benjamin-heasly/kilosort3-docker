@@ -26,5 +26,6 @@ fprintf('Found npy-matlab at %s\n', which('readNPY'));
 [~, npyMatlabStatus] = system(sprintf('git -C %s status', npyMatlabPath));
 fprintf('npy-matlab git status:\n%s\n', npyMatlabStatus);
 
-% Get home folder, including testKilosortEMouse.m, on the path.
+% Get home folder, including testKilosortEMouse.m and mex binaries on the path.
 addpath('/home/matlab');
+addpath('/home/matlab/mex-gpu-binaries');
