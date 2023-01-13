@@ -66,10 +66,10 @@ The actual mex gpu build commands are scraped from the output of `mexcuda -v ...
 
 The [ninjaben/kilosort3](https://hub.docker.com/repository/docker/ninjaben/kilosort3/general) image is available on Docker Hub.
 
-# Example Commands
+# Example commands
 Here are some example `docker run` commands that should help you run `ninjaben/kilosort3` containers on a confiured host.
 
-## Quick Test
+## Quick test
 You can run the Mathworks [mexGPUExample](https://www.mathworks.com/help/parallel-computing/run-mex-functions-containing-cuda-code.html) to check if the host, Docker, CUDA, and Matlab are all working together.
 
 This example uses a local Matlab license, specific to the host MAC address.  There are also more ways to configure the license, documented in the [Matlab readme on Docker Hub](https://hub.docker.com/r/mathworks/matlab).  You'll probably need to edit this command a bit to reflect your license situation.
@@ -153,7 +153,7 @@ docker run --gpus all --rm \
 
 I hope this is helpful and fun -- good luck!
 
-# A Point about Image Sizes
+# A point about image sizes
 Here are the rough, uncompressed sizes of images used and produced during the build process for this repo.
 
 ```
@@ -169,7 +169,7 @@ The Matlab base image brings in >5GB to start with.  Adding the required toolbox
 
 Installing CUDA Toolkit nearly doubles the image size to >18GB!  This seems like a lot to ask.  That's why the final `ninjaben/kilosort3` image omits CUDA Toolkit and only includes precompiled mex binaries.
 
-# Building the Images.
+# Building the images
 
 ## Local
 You can build these Docker images locally like this:
