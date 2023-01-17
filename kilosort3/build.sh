@@ -2,7 +2,7 @@
 
 set -e
 
-sudo docker build -t ninjaben/kilosort3:r2022b .
+sudo docker build -t ninjaben/kilosort3:local .
 
 # Run a container locally to check if mex gpu functions are present and runnable.
 # Since this step actually runs Matlab, we'll need to configure a license.
@@ -14,5 +14,5 @@ sudo docker run --rm \
   --mac-address "$LICENSE_MAC_ADDRESS" \
   -v $LICENSE_FILE:/licenses/license.lic \
   -e MLM_LICENSE_FILE=/licenses/license.lic \
-  ninjaben/kilosort3:r2022b \
+  ninjaben/kilosort3:local \
   -batch "shouldBeTwos = mexGPUExample(ones(4,4,'gpuArray'))"

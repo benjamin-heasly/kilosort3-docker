@@ -2,4 +2,4 @@
 
 set -e
 
-sudo docker build -t ninjaben/matlab-parallel:r2022b .
+sudo docker build -t ninjaben/matlab-parallel:local .
