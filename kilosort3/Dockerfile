@@ -1,5 +1,5 @@
 # Stage 0: Build mex gpu binaries with the CUDA toolkit.
-ARG VERSION=r2022b
+ARG VERSION=local
 FROM ninjaben/kilosort3-code:$VERSION as mex-build
 
 # Become root to install more packages.

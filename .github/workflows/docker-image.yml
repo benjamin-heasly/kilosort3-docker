@@ -62,3 +62,19 @@ jobs:
         context: ./kilosort3
         push: true
         tags: ninjaben/kilosort3:${{ env.version-tag }}
+  phy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out this repo
+      uses: actions/checkout@v3
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v3
+      with:
+        context: ./phy
+        push: true
+        tags: ninjaben/phy:${{ env.version-tag }}

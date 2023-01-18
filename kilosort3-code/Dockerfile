@@ -1,5 +1,5 @@
 # Start with the MATLAB base image that includes Matlab toolboxes required for Kilosort3.
-ARG VERSION=r2022b
+ARG VERSION=local
 FROM ninjaben/matlab-parallel:$VERSION
 
 # Become root to install git.

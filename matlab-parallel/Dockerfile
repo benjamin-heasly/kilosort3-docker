@@ -1,5 +1,5 @@
 # Start with the MATLAB base image (published on Docker Hub).
-FROM mathworks/matlab:local
+FROM mathworks/matlab:r2022b
 
 # Become root to install more toolboxes.
 USER root
