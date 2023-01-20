@@ -2,34 +2,37 @@
 %
 % This function is intended for automated / unattended testing of a
 % Kilosort installation.  It uses the eMouse simulator to generate data to
-% be sorted, then invokes kilosort sourting routines that will try to do
-% spike sorting with Kilosort's GPU-accelerated mex-functions.
+% be sorted, then tries to do spike sorting with Kilosort's utilities and
+% GPU-accelerated mex-functions.
 %
 % If the installation is good:
 %  - This function should complete without error.
 %  - This function should print a summary to the Command Window / sdtout.
 %  - Sanity check assertions at the end of this function should pass.
 %
-% This was writting with Docker containers and Linux in mind.  It should
+% This was written with Docker containers and Linux in mind.  It should
 % run on Windows, too (or we should update it to make that be so).
 %
-function success = testKilosortEMouse(eMouseDataDir, kilosortCodeDir, kilosortScratchDir)
+function [success, rezFile, phyDir] = testKilosortEMouse(eMouseDataDir, outDir, varargin)
 
 arguments
     eMouseDataDir = fullfile('/', 'home', 'matlab', 'eMouse')
-    kilosortCodeDir = fileparts(which('kilosort.m'));
-    kilosortScratchDir = fullfile('/', 'home', 'matlab', 'kilosortScratch');
+    outDir = fullfile(eMouseDataDir, 'results')
 end
 
-success = false;
+arguments (Repeating)
+    varargin
+end
 
 if ~isfolder(eMouseDataDir)
     mkdir(eMouseDataDir)
 end
 
-if ~isfolder(kilosortScratchDir)
-    mkdir(kilosortScratchDir)
+if ~isfolder(outDir)
+    mkdir(outDir)
 end
+
+%% Generate eMouse simulated data.
 
 % Create the simulated probe channel map: 64 sites with imec 3A geometry.
 NchanTOT = 64;
@@ -40,7 +43,7 @@ useGPU = 1;
 useParPool = 0;
 make_eMouseData_drift(eMouseDataDir, kilosortCodeDir, chanMapName, useGPU, useParPool);
 
-% Choose kilosort options suitable for the simulated probe and neural data.
+% Choose kilosort ops suitable for the simulated probe and neural data.
 % See Kilosort/configFiles/StandardConfig_MOVEME.m for some explanation.
 ops.chanMap = fullfile(eMouseDataDir, chanMapName);
 ops.NchanTOT = NchanTOT;
@@ -49,7 +52,7 @@ ops.rootZ = eMouseDataDir;
 ops.fbinary = fullfile(eMouseDataDir,  'sim_binary.imec.ap.bin');
 ops.trange = [0 Inf];
 
-ops.fproc = fullfile(kilosortScratchDir, 'temp_wh.dat');
+ops.fproc = fullfile(eMouseDataDir, 'temp_wh.dat');
 
 ops.fs = 30000;
 ops.fshigh = 300;
@@ -76,29 +79,22 @@ ops.nPCs = 3;
 ops.useRAM = 0;
 ops.nblocks = 5;
 
-% Reinitialize the GPU.
-gpuDevice(1);
 
-%% Run Kilosort utils on the simulated probe and neural data.
-rez = preprocessDataSub(ops);
-rez = datashift2(rez, 1);
-[rez, st3, tF] = extract_spikes(rez);
-rez = template_learning(rez, tF, st3);
-[rez, st3, tF] = trackAndSort(rez);
-rez = final_clustering(rez, tF, st3);
-rez = find_merges(rez, 1);
+%% Run Kilosort and report sanity checks.
+[rezFile, phyDir, rez] = runKilosort(ops, outDir, varargin);
 
-% Export results to Numpy / Phy.
-rezToPhy(rez, eMouseDataDir);
+clusterCount = numel(rez.good);
+goodCount = sum(rez.good > 0);
+success = any(rez.good);
+if success
+    fprintf('Success: found %d clusters with %d considered "good".\n', clusterCount, goodCount);
+else
+    fprintf('Failure: found %d clusters but none considered "good".\n', clusterCount);
+end
 
-% Discard features in final rez file (too slow to save) (what??)
-rez.cProj = [];
-rez.cProjPC = [];
 
-rezFileName = fullfile(eMouseDataDir, 'rezFinal.mat');
-save(rezFileName, 'rez', '-v7.3');
-
-clusterGroupFile = fullfile(eMouseDataDir, 'cluster_group.tsv');
+%% Record a table of raw cluster info.
+clusterGroupFile = fullfile(outDir, 'cluster_group.tsv');
 fileID = fopen(clusterGroupFile, 'w');
 fprintf(fileID, 'cluster_id%sgroup', char(9));
 fprintf(fileID, char([13 10]));
@@ -110,31 +106,23 @@ for k = 1:length(rez.good)
 end
 fclose(fileID);
 
-% Report sanity checks.
-clusterCount = numel(rez.good);
-goodCount = sum(rez.good > 0);
-success = any(rez.good);
-if success
-    fprintf('Success: found %d clusters with %d considered "good".\n', clusterCount, goodCount);
-else
-    fprintf('Failure: found %d clusters but none considered "good".\n', clusterCount);
-end
 
-% Compare sorting results to simulation ground truth.
+%% Compare sorting results to eMouse ground truth.
 sortType = 2;
 bAutoMerge = 0;
 benchmark_drift_simulation(rez, ...
-    fullfile(eMouseDataDir, 'eMouseGroundTruth.mat'), ...
-    fullfile(eMouseDataDir, 'eMouseSimRecord.mat'), ...
+    fullfile(outDir, 'eMouseGroundTruth.mat'), ...
+    fullfile(outDir, 'eMouseSimRecord.mat'), ...
     sortType, ...
     bAutoMerge, ...
-    fullfile(eMouseDataDir, 'output_cluster_metrics.txt'));
+    fullfile(outDir, 'output_cluster_metrics.txt'));
 
-% Save any figures produced above so we can view the images.
+
+%% Save any figures produced above so we can view the images.
 figures = findobj('Type', 'figure');
 for ii = 1:numel(figures)
     fig = figures(ii);
     name = sprintf('testKilosortEMouse-%d.png', ii);
-    file = fullfile(eMouseDataDir, name);
+    file = fullfile(outDir, name);
     saveas(fig, file);
 end
