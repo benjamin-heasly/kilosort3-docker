@@ -39,6 +39,7 @@ NchanTOT = 64;
 chanMapName = make_eMouseChannelMap_3B_short(eMouseDataDir, NchanTOT);
 
 % Generate simulated neural data.
+kilosortCodeDir = fileparts(which('kilosort.m'));
 useGPU = 1;
 useParPool = 0;
 make_eMouseData_drift(eMouseDataDir, kilosortCodeDir, chanMapName, useGPU, useParPool);
