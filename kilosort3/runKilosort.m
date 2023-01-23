@@ -37,7 +37,7 @@ end
 start = datetime('now', 'Format', 'uuuuMMdd''T''HHmmss');
 fprintf('runKilosort Start at: %s\n', char(start));
 
-if isfile(ops)
+if ischar(ops) && isfile(ops)
     fprintf('runKilosort Loading ops from file: %s\n', ops);
     ops = load(ops);
 end
