@@ -82,7 +82,7 @@ ops.nblocks = 5;
 
 
 %% Run Kilosort and report sanity checks.
-[rezFile, phyDir, rez] = runKilosort(ops, outDir, varargin);
+[rezFile, phyDir, rez] = runKilosort(ops, outDir, varargin{:});
 
 clusterCount = numel(rez.good);
 goodCount = sum(rez.good > 0);
