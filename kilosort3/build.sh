@@ -15,4 +15,5 @@ sudo docker run --rm \
   -v $LICENSE_FILE:/licenses/license.lic \
   -e MLM_LICENSE_FILE=/licenses/license.lic \
   ninjaben/kilosort3:local \
-  -batch "shouldBeTwos = mexGPUExample(ones(4,4,'gpuArray'))"
+  -batch "testKilosortEMouse()"
+#  -batch "shouldBeTwos = mexGPUExample(ones(4,4,'gpuArray'))"

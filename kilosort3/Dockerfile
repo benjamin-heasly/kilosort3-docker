@@ -34,6 +34,7 @@ COPY --from=mex-build /home/matlab/*.mexa64 /home/matlab/mex-gpu-binaries/
 # On Matlab start, log useful info and add kilosort to the path.
 COPY ./startup.m /home/matlab/Documents/MATLAB/startup.m
 
-# Add scripts to run Kilosort itself.
+# Add scripts to test and run Kilosort itself.
+COPY ./loadStruct.m /home/matlab/loadStruct.m
 COPY ./runKilosort.m /home/matlab/runKilosort.m
-COPY ./testKilosortEMouse.m /home/matlab/testKilosortEMouse.m
+COPY ./test/ /home/matlab/test/
