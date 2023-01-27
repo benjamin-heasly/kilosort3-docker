@@ -17,11 +17,15 @@
 % In addition to these positional arguments, optional name-value pairs are
 % allowed.
 %
-% ops -- a value passed with the 'ops' name will be read as a struct,
+% ops -- A value passed with the 'ops' name will be read in as a struct,
 %        supporting several input formats via loadStruct().  Fields of this
 %        new struct will supplement and/or override fields of the original
-%        ops struct from the first positional argument.
-% dryRun -- if true, skips actual Kilosort run
+%        ops struct pass in as the first positional argument.
+% dryRun -- If true, skips actual Kilosort run.  Default is false.
+% driftCorrection -- If true, applies Kilosort3 drift correction to the
+%                    incoming data on disk.  Default is true.  Setting to
+%                    false might make sense for widely-spaced probe
+%                    contacts.
 %
 % Outputs:
 %
@@ -49,6 +53,7 @@ parser.StructExpand = true;
 
 parser.addParameter('ops', struct());
 parser.addParameter('dryRun', false);
+parser.addParameter('driftCorrection', true);
 
 parser.parse(varargin{:});
 
@@ -93,7 +98,7 @@ else
     fprintf('runKilosort Beginning kilosort run...\n');
     fprintf('\n')
     rez = preprocessDataSub(ops);
-    rez = datashift2(rez, 1);
+    rez = datashift2(rez, parser.Results.driftCorrection);
     [rez, st3, tF] = extract_spikes(rez);
     rez = template_learning(rez, tF, st3);
     [rez, st3, tF] = trackAndSort(rez);
