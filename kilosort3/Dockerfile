@@ -32,7 +32,7 @@ FROM ninjaben/kilosort3-code:$VERSION
 COPY --from=mex-build /home/matlab/*.mexa64 /home/matlab/mex-gpu-binaries/
 
 # On Matlab start, log useful info and add kilosort to the path.
-COPY ./startup.m /home/matlab/Documents/MATLAB/startup.m
+COPY ./container-startup.m /home/matlab/Documents/MATLAB/startup.m
 
 # Add scripts to test and run Kilosort itself.
 COPY ./loadStruct.m /home/matlab/loadStruct.m
