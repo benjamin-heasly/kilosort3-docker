@@ -86,6 +86,10 @@ if isfield(ops, 'fproc')
     end
 end
 
+if ~isfolder(outDir)
+    mkdir(outDir);
+end
+
 
 %% Run Kilosort utils to create the "rez" struct.
 if parser.Results.dryRun
@@ -135,6 +139,16 @@ if parser.Results.dryRun
 else
     fprintf('runKilosort Writing "rez" struct to %s.\n', phyDir);
     save(rezFile, 'rez', '-v7.3');
+end
+
+
+%% Save any figures produced by Kilosort, so we can view the images.
+figures = findobj('Type', 'figure');
+for ii = 1:numel(figures)
+    fig = figures(ii);
+    name = sprintf('runKilosort-%d.png', ii);
+    file = fullfile(outDir, name);
+    saveas(fig, file);
 end
 
 
