@@ -23,9 +23,13 @@
 %        ops struct pass in as the first positional argument.
 % dryRun -- If true, skips actual Kilosort run.  Default is false.
 % driftCorrection -- If true, applies Kilosort3 drift correction to the
-%                    incoming data on disk.  Default is true.  Setting to
-%                    false might make sense for widely-spaced probe
-%                    contacts.
+%                    incoming data on disk.  Setting to false might make
+%                    sense for widely-spaced probe contacts.  Default is
+%                    true.
+% autoMerge -- If true, Kilosort3 will automatically merge clusters based
+%              on template correlation, spike cross-correlograms, and spike
+%              refractoriness.  If false, just computes cross-correlogram
+%              and spike refractoriness scores.  Default is true.
 %
 % Outputs:
 %
@@ -54,6 +58,7 @@ parser.StructExpand = true;
 parser.addParameter('ops', struct());
 parser.addParameter('dryRun', false);
 parser.addParameter('driftCorrection', true);
+parser.addParameter('autoMerge', true);
 
 parser.parse(varargin{:});
 
@@ -107,7 +112,7 @@ else
     rez = template_learning(rez, tF, st3);
     [rez, st3, tF] = trackAndSort(rez);
     rez = final_clustering(rez, tF, st3);
-    rez = find_merges(rez, 1);
+    rez = find_merges(rez, parser.Results.autoMerge);
     fprintf('\n')
     fprintf('runKilosort Finished kilosort run.\n');
 end
@@ -128,17 +133,19 @@ end
 
 %% Save Kilosort's own results.
 rezFile = fullfile(outDir, 'rez.mat');
-
-% Discard features in final rez file (too slow to save)
-% Why is this / what does this mean?
-rez.cProj = [];
-rez.cProjPC = [];
-
 if parser.Results.dryRun
     fprintf('runKilosort Dry run: skipping Kilosort "rez" file writing.\n');
 else
-    fprintf('runKilosort Writing "rez" struct to %s.\n', phyDir);
+    fprintf('runKilosort Writing "rez" struct to %s.\n', rezFile);
     save(rezFile, 'rez', '-v7.3');
+end
+
+tFFile = fullfile(outDir, 'tF.mat');
+if parser.Results.dryRun
+    fprintf('runKilosort Dry run: skipping Kilosort "tF" file writing.\n');
+else
+    fprintf('runKilosort Writing "tF" spike template features to %s.\n', tFFile);
+    save(tFFile, 'tF', '-v7.3');
 end
 
 
