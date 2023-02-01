@@ -36,7 +36,7 @@ WORKDIR /home/phy
 # As of Jan 2023, phy is not compatible with numpy 1.24, so use 1.23.5
 # As of Feb 2023, "--upgrade pip" installed pip 23.0, which broke the build, pinning to 22.3.1 which was working.
 ENV PATH="$PATH:/home/phy/.local/bin"
-RUN pip install --no-cache-dir -pip==22.3.1 \
+RUN pip install --no-cache-dir pip==22.3.1 \
     && pip install --no-cache-dir numpy==1.23.5 \
     && pip install --no-cache-dir --pre --upgrade phy
 
