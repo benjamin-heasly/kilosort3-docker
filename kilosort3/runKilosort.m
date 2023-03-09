@@ -20,7 +20,10 @@
 % ops -- A value passed with the 'ops' name will be read in as a struct,
 %        supporting several input formats via loadStruct().  Fields of this
 %        new struct will supplement and/or override fields of the original
-%        ops struct pass in as the first positional argument.
+%        ops struct pass in as the first positional argument.  In addition
+%        to standard Kilosort ops, keys tStart and/or tEnd can be included,
+%        with their values set to ops.trange(1) and/or ops.trange(2),
+%        respectively.
 % dryRun -- If true, skips actual Kilosort run.  Default is false.
 % driftCorrection -- If true, applies Kilosort3 drift correction to the
 %                    incoming data on disk.  Setting to false might make
@@ -77,6 +80,20 @@ for ii = 1:numel(customFields)
     fieldName = customFields{ii};
     fprintf('runKilosort Overriding ops %s with value: %s\n', fieldName, mat2str(customOps.(fieldName)));
     ops.(fieldName) = customOps.(fieldName);
+end
+
+if isfield(ops, 'tStart')
+    fprintf('runKilosort setting ops.trange(1) from ops.tStart: %f\n', ops.tStart);
+    if ~isfield(ops, 'trange')
+        ops.trange = [ops.tStart, inf];
+    else
+        ops.trange(1) = ops.tStart;
+    end
+end
+
+if isfield(ops, 'tEnd')
+    fprintf('runKilosort setting ops.trange(2) from ops.tEnd: %f\n', ops.tEnd);
+    ops.trange(2) = ops.tEnd;
 end
 
 fprintf('runKilosort Here are the final Kilosort ops:\n');
