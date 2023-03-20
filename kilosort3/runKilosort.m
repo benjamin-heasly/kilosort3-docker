@@ -78,7 +78,8 @@ customOps = loadStruct(parser.Results.ops);
 customFields = fieldnames(customOps);
 for ii = 1:numel(customFields)
     fieldName = customFields{ii};
-    fprintf('runKilosort Overriding ops %s with value: %s\n', fieldName, mat2str(customOps.(fieldName)));
+    fprintf('runKilosort Overriding ops %s with value:\n', fieldName);
+    disp(customOps.(fieldName))
     ops.(fieldName) = customOps.(fieldName);
 end
 

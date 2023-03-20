@@ -68,3 +68,9 @@ customOps = struct('tEnd', 99);
 expectedOps = struct('foo', 'bar', 'baz', 42, 'trange', [0 99], 'tEnd', 99);
 assert(isequal(rez.ops, expectedOps));
 
+
+%% Ops with nested struct.
+customOps = struct('nestedStruct', struct('quux', 9000));
+[~, ~, rez] = runKilosort(testOps, testOutDir, 'ops', customOps, 'dryRun', true);
+expectedOps = struct('foo', 'bar', 'baz', 42, 'nestedStruct', struct('quux', 9000));
+assert(isequal(rez.ops, expectedOps));
