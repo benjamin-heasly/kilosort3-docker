@@ -157,6 +157,11 @@ else
     fprintf('runKilosort Writing "rez" struct to %s.\n', rezFile);
     save(rezFile, 'rez', '-v7.3');
 
+    opsOutFile = fullfile(outDir, 'ops.json');
+    fprintf('summarizeRez Writing ops to %s.\n', opsOutFile);
+    opsOutJson = jsonencode(rez.ops);
+    writelines(opsOutJson, opsOutFile);
+
     rezSummaryFile = fullfile(outDir, 'rezSummary.json');
     summarizeRez(rez, rezSummaryFile);
 end

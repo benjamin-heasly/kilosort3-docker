@@ -18,7 +18,7 @@ arguments
 end
 
 
-%% Summarize some rez info to a plain old struct.
+%% Summarize some spike/cluster info to a plain old struct.
 clusterCount = numel(rez.good);
 summary.clusterCount = clusterCount;
 summary.goodCount = sum(rez.good);
