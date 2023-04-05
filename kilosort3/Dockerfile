@@ -37,4 +37,5 @@ COPY ./container-startup.m /home/matlab/Documents/MATLAB/startup.m
 # Add scripts to test and run Kilosort itself.
 COPY ./loadStruct.m /home/matlab/loadStruct.m
 COPY ./runKilosort.m /home/matlab/runKilosort.m
+COPY ./summarizeRez.m /home/matlab/summarizeRez.m
 COPY ./test/ /home/matlab/test/
