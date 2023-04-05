@@ -156,14 +156,9 @@ if parser.Results.dryRun
 else
     fprintf('runKilosort Writing "rez" struct to %s.\n', rezFile);
     save(rezFile, 'rez', '-v7.3');
-end
 
-tFFile = fullfile(outDir, 'tF.mat');
-if parser.Results.dryRun
-    fprintf('runKilosort Dry run: skipping Kilosort "tF" file writing.\n');
-else
-    fprintf('runKilosort Writing "tF" spike template features to %s.\n', tFFile);
-    save(tFFile, 'tF', '-v7.3');
+    rezSummaryFile = fullfile(outDir, 'rezSummary.json');
+    summarizeRez(rez, rezSummaryFile);
 end
 
 
