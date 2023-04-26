@@ -19,10 +19,12 @@ RUN export DEBIAN_FRONTEND=noninteractive \
 USER matlab
 WORKDIR /home/matlab
 
-# Get Kilosort3, pegged to a specific commit to make this reproducible (no repo tags yet for kilosort 3).
-# commit 1a1fd3ae07a49c042b4128d6c2e79d6ab55872e5 is from 2022-03-09
-RUN git clone https://github.com/MouseLand/Kilosort.git /home/matlab/kilosort \
-    && git -C /home/matlab/kilosort checkout 1a1fd3ae07a49c042b4128d6c2e79d6ab55872e5
+# Get Kilosort3, pegged to a specific commit to make this reproducible.
+# Unfortunately we need a slightly patched version of the code, as discussed here:
+# https://github.com/benjamin-heasly/Kilosort/pull/1
+# commit 4f50d499bd617d820c271aa7a2812932fc22e34d is from 2023-04-26
+RUN git clone https://github.com/benjamin-heasly/Kilosort.git /home/matlab/kilosort \
+    && git -C /home/matlab/kilosort checkout 4f50d499bd617d820c271aa7a2812932fc22e34d
 
 # Get npy-matlab, pegged to a specific commit to make this reproducible (no repo tags in this repo).
 # commit b7b0a4ef6ba26d98a8c54e651d5444083c88311c is from 2018-11-14
