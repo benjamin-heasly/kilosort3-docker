@@ -22,9 +22,10 @@ WORKDIR /home/matlab
 # Get Kilosort3, pegged to a specific commit to make this reproducible.
 # Unfortunately we need a slightly patched version of the code, as discussed here:
 # https://github.com/benjamin-heasly/Kilosort/pull/1
-# commit 4f50d499bd617d820c271aa7a2812932fc22e34d is from 2023-04-26
+# https://github.com/benjamin-heasly/Kilosort/pull/2
+# commit 91eb18e994b801d91bf1a52e418696fb52a56ccf is from 2023-04-26
 RUN git clone https://github.com/benjamin-heasly/Kilosort.git /home/matlab/kilosort \
-    && git -C /home/matlab/kilosort checkout 4f50d499bd617d820c271aa7a2812932fc22e34d
+    && git -C /home/matlab/kilosort checkout 91eb18e994b801d91bf1a52e418696fb52a56ccf
 
 # Get npy-matlab, pegged to a specific commit to make this reproducible (no repo tags in this repo).
 # commit b7b0a4ef6ba26d98a8c54e651d5444083c88311c is from 2018-11-14
