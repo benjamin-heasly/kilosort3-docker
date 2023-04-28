@@ -16,3 +16,8 @@ sudo docker run --rm \
   -e MLM_LICENSE_FILE=/licenses/license.lic \
   ninjaben/kilosort3:local \
   -batch "testRunKilosort()"
+
+# Short-circuit workflow for debugging iteration:
+# docker login -u ninjaben --password-stdin < ../secret_password
+# sudo docker build -t ninjaben/kilosort3:test .
+# sudo docker push ninjaben/kilosort3:test

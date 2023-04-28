@@ -140,6 +140,8 @@ end
 phyDir = fullfile(outDir, 'phy');
 if parser.Results.dryRun
     fprintf('runKilosort Dry run: skipping phy file writing.\n');
+elseif isempty(st3)
+    fprintf('runKilosort Found zero spikes, skipping phy file writing.\n');
 else
     fprintf('runKilosort Writing phy files to %s.\n', phyDir);
     if ~isfolder(phyDir)
