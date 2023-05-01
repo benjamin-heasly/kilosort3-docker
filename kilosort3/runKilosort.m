@@ -24,6 +24,13 @@
 %        to standard Kilosort ops, keys tStart and/or tEnd can be included,
 %        with their values set to ops.trange(1) and/or ops.trange(2),
 %        respectively.
+% useStableMode -- If true, Kilosort will try to run deterministically on
+%                  the GPU.  Default is true.  Added to ops as
+%                  ops.useStableMode.
+% LTseed -- Random seed for Kilosort to use with rng(), during template
+%           learning.  Default is 1.  Added to ops as ops.LTseed.
+% gpuSeed-- Random seed for this function to use with gpurng(), at startup.
+%           Default is 1.
 % dryRun -- If true, skips actual Kilosort run.  Default is false.
 % driftCorrection -- If true, applies Kilosort3 drift correction to the
 %                    incoming data on disk.  Setting to false might make
@@ -59,6 +66,9 @@ parser.PartialMatching = false;
 parser.StructExpand = true;
 
 parser.addParameter('ops', struct());
+parser.addParameter('useStableMode', true);
+parser.addParameter('LTseed', 1);
+parser.addParameter('gpuSeed', 1);
 parser.addParameter('dryRun', false);
 parser.addParameter('driftCorrection', true);
 parser.addParameter('autoMerge', true);
@@ -82,6 +92,9 @@ for ii = 1:numel(customFields)
     disp(customOps.(fieldName))
     ops.(fieldName) = customOps.(fieldName);
 end
+
+ops.useStableMode = parser.Results.useStableMode;
+ops.LTseed = parser.Results.LTseed;
 
 if isfield(ops, 'tStart')
     fprintf('runKilosort setting ops.trange(1) from ops.tStart: %f\n', ops.tStart);
@@ -121,6 +134,10 @@ if parser.Results.dryRun
 else
     fprintf('runKilosort Initializing GPU.\n');
     gpuDevice(1);
+
+    fprintf('runKilosort setting GPU rng seed: %d\n', parser.Results.gpuSeed);
+    gpurng('default');
+    gpurng(parser.Results.gpuSeed);
 
     fprintf('runKilosort Beginning kilosort run...\n');
     fprintf('\n')
