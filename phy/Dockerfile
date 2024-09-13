@@ -25,6 +25,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     python3 python3-pip \
     '^libxcb.*[^-dev]$' libx11-xcb1 libglu1-mesa libxrender1 libxi6 libxkbcommon0 libxkbcommon-x11-0 \
     libxcursor1 libxcomposite1 libxdamage1 libxrandr2 libxtst6 libxss1 libdbus-1-3 libevent-2.1-7 libfontconfig1 libcap2 libpulse0 libudev-dev libpci3 libnss3 libasound2 libegl1-mesa \
+    python3-pyqt5 python3-pyqt5.qtwebengine python3-pyqt5.qtsvg \
     && apt-get clean \
     && apt-get autoremove \
     && rm -rf /var/lib/apt/lists/*
@@ -34,11 +35,15 @@ USER phy
 WORKDIR /home/phy
 
 # As of Jan 2023, phy is not compatible with numpy 1.24, so use 1.23.5.
-# As of Feb 2023, phy pulls in PyQt5 5.15.8, which fails to build, so use 5.15.7.
+# As of Sept 2024, switching to system python3-pyqt5* packages above instead of chasing PyQt5 versions with pip.
+# As of Sept 2024, there seems to be a regression in PyOpenGL so pegging to 3.1.1a1.
 ENV PATH="$PATH:/home/phy/.local/bin"
 RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir PyQt5==5.15.7 \
+    && pip install --no-cache-dir PyOpenGL==3.1.1a1 \
     && pip install --no-cache-dir numpy==1.23.5 \
-    && pip install --no-cache-dir --pre --upgrade phy
+    && pip install --no-cache-dir phy==2.0b5
+
+# Add a scipt to generate Phy's cluster_info.tsv in a noninteractive way.
+COPY create_cluster_info.py /opt/scripts/
 
 CMD ["phy", "--version"]
