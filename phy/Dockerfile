@@ -30,10 +30,6 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get autoremove \
     && rm -rf /var/lib/apt/lists/*
 
-RUN useradd --create-home --shell /bin/bash phy
-USER phy
-WORKDIR /home/phy
-
 # As of Jan 2023, phy is not compatible with numpy 1.24, so use 1.23.5.
 # As of Sept 2024, switching to system python3-pyqt5* packages above instead of chasing PyQt5 versions with pip.
 # As of Sept 2024, there seems to be a regression in PyOpenGL so pegging to 3.1.1a1.
@@ -45,5 +41,9 @@ RUN pip install --no-cache-dir --upgrade pip \
 
 # Add a scipt to generate Phy's cluster_info.tsv in a noninteractive way.
 COPY create_cluster_info.py /opt/scripts/
+
+RUN useradd --create-home --shell /bin/bash phy
+USER phy
+WORKDIR /home/phy
 
 CMD ["phy", "--version"]
