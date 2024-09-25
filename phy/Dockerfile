@@ -42,8 +42,9 @@ RUN pip install --no-cache-dir --upgrade pip \
 # Add a scipt to generate Phy's cluster_info.tsv in a noninteractive way.
 COPY create_cluster_info.py /opt/scripts/
 
-# Allow users like "phy" to write in the default phy cache dir.
+# Allow users like "phy" to write in default phy dirs.
 RUN mkdir /.phy && chmod 777 /.phy
+RUN mkdir /.config && chmod 777 /.config
 
 # Run as a "phy" user by default, instead of root.
 RUN useradd --create-home --shell /bin/bash phy
